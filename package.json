@@ -1,0 +1,16 @@
+{
+  "name": "@adobe/generator-app-api-mesh",
+  "version": "0.0.1",
+  "description": "A sample API Mesh App Builder project generator",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.corp.adobe.com/devx-services/generator-app-api-mesh.git"
+  },
+  "keywords": [
+    "ecosystem:aio-app-builder-template"
+  ],
+  "author": "Adobe Inc.",
+  "license": "Apache-2.0"
+}
