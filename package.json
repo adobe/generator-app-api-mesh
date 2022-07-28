@@ -1,16 +1,59 @@
 {
   "name": "@adobe/generator-app-api-mesh",
   "version": "0.0.1",
-  "description": "A sample API Mesh App Builder project generator",
+  "description": "Extensibility template for Adobe API Mesh, for App Builder",
+  "main": "index.js",
   "scripts": {
+    "test": "npm run lint:check && npm run unit-tests",
+    "lint:check": "eslint --ext .js .",
+    "lint:fix": "eslint --ext .js --fix .",
+    "unit-tests": "jest --ci"
   },
   "repository": {
     "type": "git",
-    "url": "https://git.corp.adobe.com/devx-services/generator-app-api-mesh.git"
+    "url": "https://github.com/adobe/generator-app-api-mesh.git"
   },
   "keywords": [
     "ecosystem:aio-app-builder-template"
   ],
   "author": "Adobe Inc.",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^14 || ^16"
+  },
+  "dependencies": {
+    "@adobe/generator-add-action-generic": "^0.2.2",
+    "yeoman-generator": "^5"
+  },
+  "devDependencies": {
+    "@adobe/eslint-config-aio-lib-config": "^2",
+    "@types/jest": "^28",
+    "jest": "^28",
+    "jest-junit": "^14",
+    "yeoman-test": "^6"
+  },
+  "jest": {
+    "rootDir": ".",
+    "testEnvironment": "node",
+    "verbose": true,
+    "setupFilesAfterEnv": [
+      "./test/jest.setup.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  }
 }

@@ -1,0 +1,18 @@
+# package directories
+node_modules
+
+# Config
+.env
+.aio
+
+# IDE & Temp
+.cache
+.idea
+.vscode
+coverage
+junit.xml
+
+# OSX
+.DS_Store
+
+package-lock.json

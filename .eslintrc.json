@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "@adobe/eslint-config-aio-lib-config"
+  ],
+  "settings": {
+    "jsdoc": {
+      "ignorePrivate": true
+    }
+  },
+  "rules": {
+    "node/no-unpublished-require": [
+      "error",
+      {
+        "allowModules": [
+          "yeoman-test"
+        ]
+      }
+    ]
+  }
+}
