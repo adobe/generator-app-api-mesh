@@ -28,6 +28,7 @@
   "devDependencies": {
     "@adobe/eslint-config-aio-lib-config": "^2",
     "@types/jest": "^28",
+    "eslint": "^8.22.0",
     "jest": "^28",
     "jest-junit": "^14",
     "yeoman-test": "^6"
