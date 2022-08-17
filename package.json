@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-aio-lib-config": "^2",
+    "@types/jest": "^28",
     "eslint": "^8",
     "eslint-config-standard": "^17",
     "eslint-plugin-import": "^2",
@@ -35,9 +36,9 @@
     "eslint-plugin-n": "^15",
     "eslint-plugin-node": "^11",
     "eslint-plugin-promise": "^6",
-    "@types/jest": "^28",
     "jest": "^28",
     "jest-junit": "^14",
+    "yeoman-environment": "^3",
     "yeoman-test": "^6"
   },
   "jest": {
