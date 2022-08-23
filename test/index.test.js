@@ -13,6 +13,12 @@ const apiMesh = require('../index')
 const helpers = require('yeoman-test')
 const Generator = require('yeoman-generator')
 
+const composeWith = jest.spyOn(Generator.prototype, 'composeWith')
+
+beforeEach(() => {
+  composeWith.mockClear()
+})
+
 describe('prototype', () => {
   test('exports a yeoman generator', () => {
     expect(apiMesh.prototype).toBeInstanceOf(Generator)
@@ -22,8 +28,20 @@ describe('prototype', () => {
 describe('run', () => {
   test('test a generator invocation', async () => {
     const options = { 'skip-prompt': true }
-    const run = await helpers.run(apiMesh)
+    await helpers.run(apiMesh)
       .withOptions(options)
-    expect(run).toBeDefined()
+    expect(composeWith).toHaveBeenCalledTimes(1)
+    expect(composeWith).toHaveBeenCalledWith(
+      expect.objectContaining({
+        Generator: expect.any(apiMesh.constructor),
+        path: 'unknown'
+      }),
+      expect.objectContaining({
+        'skip-prompt': true,
+        'action-folder': 'src/api-mesh/actions',
+        'config-path': 'app.config.yaml',
+        'full-key-to-manifest': 'application.runtimeManifest'
+      })
+    )
   })
 })

@@ -9,7 +9,10 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+const path = require('path')
 const Generator = require('yeoman-generator')
+const { constants } = require('@adobe/generator-app-common-lib')
+const genericAction = require('@adobe/generator-add-action-generic')
 
 class ApiMesh extends Generator {
   constructor (args, opts, features) {
@@ -18,8 +21,24 @@ class ApiMesh extends Generator {
     this.option('skip-prompt', { default: false })
   }
 
-  test () {
-    this.log('This is a test method, remove it later.')
+  async initializing () {
+    // all paths are relative to root
+    this.templateFolder = 'src/api-mesh'
+    this.actionFolder = path.join(this.templateFolder, 'actions')
+    this.templateConfigPath = constants.appConfigFile
+
+    // generate a generic action
+    this.composeWith({
+      Generator: genericAction,
+      path: 'unknown'
+    },
+    {
+      // forward needed options
+      'skip-prompt': true, // do not ask for an action name
+      'action-folder': this.actionFolder,
+      'config-path': this.templateConfigPath,
+      'full-key-to-manifest': 'application.runtimeManifest'
+    })
   }
 }
 
