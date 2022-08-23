@@ -36,12 +36,7 @@ describe('run', () => {
         Generator: expect.any(apiMesh.constructor),
         path: 'unknown'
       }),
-      expect.objectContaining({
-        'skip-prompt': true,
-        'action-folder': 'src/api-mesh/actions',
-        'config-path': 'app.config.yaml',
-        'full-key-to-manifest': 'application.runtimeManifest'
-      })
+      expect.any(Object)
     )
   })
 })
