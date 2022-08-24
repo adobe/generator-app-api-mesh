@@ -15,8 +15,15 @@ const Generator = require('yeoman-generator')
 
 const composeWith = jest.spyOn(Generator.prototype, 'composeWith')
 
+beforeAll(() => {
+  // mock implementations
+  composeWith.mockReturnValue(undefined)
+})
 beforeEach(() => {
   composeWith.mockClear()
+})
+afterAll(() => {
+  composeWith.mockRestore()
 })
 
 describe('prototype', () => {

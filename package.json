@@ -1,6 +1,6 @@
 {
   "name": "@adobe/generator-app-api-mesh",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "Extensibility template for Adobe API Mesh, for App Builder",
   "main": "index.js",
   "scripts": {
@@ -50,7 +50,8 @@
       "./test/jest.setup.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/node_modules/"
+      "<rootDir>/node_modules/",
+      "<rootDir>/templates/"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [],
