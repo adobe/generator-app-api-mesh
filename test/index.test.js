@@ -15,19 +15,12 @@ const Generator = require('yeoman-generator')
 const ApiMeshActionGenerator = require('../src/generator-add-action-api-mesh')
 const excReactWebAssets = require('@adobe/generator-add-web-assets-exc-react')
 
-const composeWith = jest.spyOn(Generator.prototype, 'composeWith')
+const composeWith = jest.spyOn(Generator.prototype, 'composeWith').mockImplementation(jest.fn())
 const prompt = jest.spyOn(Generator.prototype, 'prompt')
 
-beforeAll(() => {
-  // mock implementations
-  composeWith.mockReturnValue(undefined)
-})
 beforeEach(() => {
   composeWith.mockClear()
   prompt.mockClear()
-})
-afterAll(() => {
-  composeWith.mockRestore()
 })
 
 describe('prototype', () => {
@@ -50,7 +43,7 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
-        'action-folder': 'src/api-mesh/actions',
+        'action-folder': global.n('src/api-mesh/actions'),
         'config-path': 'app.config.yaml',
         'full-key-to-manifest': 'application.runtimeManifest'
       }
@@ -77,8 +70,8 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
-        'action-folder': 'src/dx-excshell-1/api-mesh/actions',
-        'config-path': 'src/dx-excshell-1/api-mesh/ext.config.yaml',
+        'action-folder': global.n('src/dx-excshell-1/api-mesh/actions'),
+        'config-path': global.n('src/dx-excshell-1/api-mesh/ext.config.yaml'),
         'full-key-to-manifest': 'runtimeManifest'
       }
     )
@@ -89,8 +82,8 @@ describe('run', () => {
       }),
       {
         'skip-prompt': false,
-        'web-src-folder': 'src/dx-excshell-1/api-mesh/web-src',
-        'config-path': 'src/dx-excshell-1/api-mesh/ext.config.yaml'
+        'web-src-folder': global.n('src/dx-excshell-1/api-mesh/web-src'),
+        'config-path': global.n('src/dx-excshell-1/api-mesh/ext.config.yaml')
       }
     )
   })
