@@ -48,7 +48,7 @@ describe('<%= actionName %>', () => {
     expect(Core.Logger).toHaveBeenCalledWith(expect.any(String), { level: 'fakeLevel' })
   })
 
-  test('should return an http reponse with changed content', async () => {
+  test('should return an http response with changed content', async () => {
     jest.spyOn(GraphQLClient.prototype, 'request').mockReturnValue({
       storeConfig: {
         store_name: 'Test Store'
@@ -65,7 +65,7 @@ describe('<%= actionName %>', () => {
     })
   })
 
-  test('if there is an error should return 500 and log the error', async () => {
+  test('if there is an error, should return 500 and log the error', async () => {
     const fakeError = new Error('fake')
     jest.spyOn(GraphQLClient.prototype, 'request').mockRejectedValue(fakeError)
     const response = await action.main(fakeParams)
