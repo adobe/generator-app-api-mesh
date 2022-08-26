@@ -10,25 +10,132 @@ governing permissions and limitations under the License.
 */
 
 const path = require('path')
+const upath = require('upath')
 const Generator = require('yeoman-generator')
-const { constants } = require('@adobe/generator-app-common-lib')
-const StandaloneHeadlessApplication = require('./src/StandaloneHeadlessApplication')
+const { constants, utils } = require('@adobe/generator-app-common-lib')
+const ApiMeshActionGenerator = require('./src/generator-add-action-api-mesh')
+const excReactWebAssets = require('@adobe/generator-add-web-assets-exc-react')
 
 class ApiMesh extends Generator {
   constructor (args, opts, features) {
     super(args, opts, features)
 
-    this.option('skip-prompt', { default: false })
+    this.option('yes', { type: Boolean, default: false, description: 'Skip questions, and use all default values' })
+
+    this.props = {
+      // should a generator generate a Single Page Application accessed through Experience Cloud UI
+      isExperienceCloudUIApp: false
+    }
   }
 
   async initializing () {
+    await this._askAboutExperienceCloudUI()
+
+    if (this.props.isExperienceCloudUIApp) {
+      await this._generateExperienceCloudUIApp()
+    } else {
+      await this._generateHeadlessApp()
+    }
+  }
+
+  async writing () {
+    if (this.props.isExperienceCloudUIApp) {
+      const unixExtConfigPath = upath.toUnix(this.templateConfigPath)
+      // add the extension point config in root
+      utils.writeKeyAppConfig(
+        this,
+        // key
+        'extensions.' + this.configName,
+        // value
+        {
+          $include: unixExtConfigPath
+        }
+      )
+
+      // add an extension point operation
+      utils.writeKeyYAMLConfig(
+        this,
+        this.templateConfigPath,
+        // key
+        'operations',
+        // value
+        {
+          view: [
+            { type: 'web', impl: 'index.html' }
+          ]
+        }
+      )
+
+      // add actions path, relative to config file
+      utils.writeKeyYAMLConfig(this, this.templateConfigPath, 'actions', path.relative(this.templateFolder, this.actionFolder))
+      // add web-src path, relative to config file
+      utils.writeKeyYAMLConfig(this, this.templateConfigPath, 'web', path.relative(this.templateFolder, this.webSrcFolder))
+    }
+  }
+
+  async end () {
+    this.log('\nSample code files have been generated.\n')
+    this.log('Next steps:')
+    this.log('1) Check that you have the "aio api-mesh" plugin installed, `aio plugins install @adobe/aio-cli-plugin-api-mesh`')
+    this.log(`2) Create API MESH from an example mesh.json file, \`aio api-mesh:create ${this.templateFolder}/conf/mesh.json\``)
+    this.log('3) Populate "MESH_ID", "MESH_API_KEY" environment variables in the ".env" file')
+    this.log('4) Now you can use `aio app run` or `aio app deploy` to see sample code files in action')
+    this.log('\n')
+  }
+
+  async _askAboutExperienceCloudUI () {
+    if (!this.options.yes) {
+      const confirm = await this.prompt([
+        {
+          type: 'confirm',
+          name: 'isExperienceCloudUIApp',
+          message: 'By default, Headless Application sample API Mesh code files will be generated. Should generated sample API Mesh code files be for a Single Page Application accessed through Experience Cloud UI?',
+          default: this.props.isExperienceCloudUIApp
+        }
+      ])
+      this.props.isExperienceCloudUIApp = confirm.isExperienceCloudUIApp
+    }
+  }
+
+  async _generateExperienceCloudUIApp () {
+    // all paths are relative to root
+    this.templateFolder = 'src/dx-excshell-1/api-mesh'
+    this.actionFolder = path.join(this.templateFolder, 'actions')
+    this.webSrcFolder = path.join(this.templateFolder, 'web-src')
+    this.templateConfigPath = path.join(this.templateFolder, 'ext.config.yaml')
+    this.configName = 'dx/excshell/1'
+
+    this.composeWith({
+      Generator: ApiMeshActionGenerator,
+      path: 'unknown'
+    },
+    {
+      // forward needed options
+      'action-folder': this.actionFolder,
+      'config-path': this.templateConfigPath,
+      'full-key-to-manifest': constants.runtimeManifestKey
+    })
+
+    // generate the UI
+    this.composeWith({
+      Generator: excReactWebAssets,
+      path: 'unknown'
+    }, {
+      // forward needed args
+      'skip-prompt': this.options.yes,
+      'web-src-folder': this.webSrcFolder,
+      'config-path': this.templateConfigPath
+    })
+  }
+
+  async _generateHeadlessApp () {
     // all paths are relative to root
     this.templateFolder = 'src/api-mesh'
     this.actionFolder = path.join(this.templateFolder, 'actions')
     this.templateConfigPath = constants.appConfigFile
 
     this.composeWith({
-      Generator: StandaloneHeadlessApplication,
+      Generator: ApiMeshActionGenerator,
       path: 'unknown'
     },
     {

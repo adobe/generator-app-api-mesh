@@ -34,7 +34,7 @@ describe('prototype', () => {
 
 describe('run', () => {
   test('test a generator invocation', async () => {
-    const options = { 'skip-prompt': true }
+    const options = { yes: true }
     await helpers.run(apiMesh)
       .withOptions(options)
     expect(composeWith).toHaveBeenCalledTimes(1)

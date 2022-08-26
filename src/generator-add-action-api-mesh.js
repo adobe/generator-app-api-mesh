@@ -17,7 +17,7 @@ const { constants, commonTemplates } = require('@adobe/generator-app-common-lib'
 const { commonDependencyVersions } = constants
 const GenericAction = require('@adobe/generator-add-action-generic')
 
-class StandaloneHeadlessApplication extends GenericAction {
+class ApiMeshActionGenerator extends GenericAction {
   constructor (args, opts) {
     super(args, opts)
     this.props = {
@@ -79,4 +79,4 @@ const { Core } = require('@adobe/aio-sdk')`,
   }
 }
 
-module.exports = StandaloneHeadlessApplication
+module.exports = ApiMeshActionGenerator
