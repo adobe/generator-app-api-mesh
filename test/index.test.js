@@ -49,7 +49,11 @@ describe('run', () => {
         Generator: ApiMeshActionGenerator,
         path: 'unknown'
       }),
-      expect.any(Object)
+      {
+        'action-folder': 'src/api-mesh/actions',
+        'config-path': 'app.config.yaml',
+        'full-key-to-manifest': 'application.runtimeManifest'
+      }
     )
   })
 
@@ -72,14 +76,22 @@ describe('run', () => {
         Generator: ApiMeshActionGenerator,
         path: 'unknown'
       }),
-      expect.any(Object)
+      {
+        'action-folder': 'src/dx-excshell-1/api-mesh/actions',
+        'config-path': 'src/dx-excshell-1/api-mesh/ext.config.yaml',
+        'full-key-to-manifest': 'runtimeManifest'
+      }
     )
     expect(composeWith).toHaveBeenCalledWith(
       expect.objectContaining({
         Generator: excReactWebAssets,
         path: 'unknown'
       }),
-      expect.any(Object)
+      {
+        'skip-prompt': false,
+        'web-src-folder': 'src/dx-excshell-1/api-mesh/web-src',
+        'config-path': 'src/dx-excshell-1/api-mesh/ext.config.yaml'
+      }
     )
   })
 })
