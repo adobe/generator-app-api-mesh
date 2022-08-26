@@ -77,7 +77,7 @@ class ApiMesh extends Generator {
     this.log('\nSample code files have been generated.\n')
     this.log('Next steps:')
     this.log('1) Check that you have the "aio api-mesh" plugin installed, `aio plugins install @adobe/aio-cli-plugin-api-mesh`')
-    this.log(`2) Create API MESH from an example mesh.json file, \`aio api-mesh:create ${this.templateFolder}/conf/mesh.json\``)
+    this.log(`2) Create API MESH from an example "mesh.json" file, \`aio api-mesh:create ${this.templateFolder}/conf/mesh.json\``)
     this.log('3) Populate "MESH_ID", "MESH_API_KEY" environment variables in the ".env" file')
     this.log('4) Now you can use `aio app run` or `aio app deploy` to see sample code files in action')
     this.log('\n')
