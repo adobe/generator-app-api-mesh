@@ -17,9 +17,9 @@ const excReactWebAssets = require('@adobe/generator-add-web-assets-exc-react')
 const { utils } = require('@adobe/generator-app-common-lib')
 
 const composeWith = jest.spyOn(Generator.prototype, 'composeWith').mockImplementation(jest.fn())
-const prompt = jest.spyOn(Generator.prototype, 'prompt')
-const writeKeyAppConfig = jest.spyOn(utils, 'writeKeyAppConfig')
-const writeKeyYAMLConfig = jest.spyOn(utils, 'writeKeyYAMLConfig')
+const prompt = jest.spyOn(Generator.prototype, 'prompt') // prompt answers are mocked by "yeoman-test"
+const writeKeyAppConfig = jest.spyOn(utils, 'writeKeyAppConfig').mockImplementation(jest.fn())
+const writeKeyYAMLConfig = jest.spyOn(utils, 'writeKeyYAMLConfig').mockImplementation(jest.fn())
 
 beforeEach(() => {
   composeWith.mockClear()
@@ -55,6 +55,7 @@ describe('run', () => {
   })
 
   test('test a generator invocation asking questions', async () => {
+    const templateFolder = 'src/dx-excshell-1/api-mesh'
     const options = { yes: false }
     await helpers.run(apiMesh)
       .withOptions(options)
@@ -73,8 +74,8 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
-        'action-folder': global.n('src/dx-excshell-1/api-mesh/actions'),
-        'config-path': global.n('src/dx-excshell-1/api-mesh/ext.config.yaml'),
+        'action-folder': global.n(`${templateFolder}/actions`),
+        'config-path': global.n(`${templateFolder}/ext.config.yaml`),
         'full-key-to-manifest': 'runtimeManifest'
       }
     )
@@ -85,15 +86,15 @@ describe('run', () => {
       }),
       {
         'skip-prompt': false,
-        'web-src-folder': global.n('src/dx-excshell-1/api-mesh/web-src'),
-        'config-path': global.n('src/dx-excshell-1/api-mesh/ext.config.yaml')
+        'web-src-folder': global.n(`${templateFolder}/web-src`),
+        'config-path': global.n(`${templateFolder}/ext.config.yaml`)
       }
     )
     expect(writeKeyAppConfig).toHaveBeenCalledTimes(1)
     expect(writeKeyYAMLConfig).toHaveBeenCalledTimes(3)
-    expect(writeKeyAppConfig).toHaveBeenCalledWith(expect.any(apiMesh), 'extensions.dx/excshell/1', { $include: 'src/dx-excshell-1/api-mesh/ext.config.yaml' })
-    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), 'src/dx-excshell-1/api-mesh/ext.config.yaml', 'operations', { view: [{ impl: 'index.html', type: 'web' }] })
-    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), 'src/dx-excshell-1/api-mesh/ext.config.yaml', 'actions', 'actions')
-    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), 'src/dx-excshell-1/api-mesh/ext.config.yaml', 'web', 'web-src')
+    expect(writeKeyAppConfig).toHaveBeenCalledWith(expect.any(apiMesh), 'extensions.dx/excshell/1', { $include: `${templateFolder}/ext.config.yaml` })
+    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), `${templateFolder}/ext.config.yaml`, 'operations', { view: [{ impl: 'index.html', type: 'web' }] })
+    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), `${templateFolder}/ext.config.yaml`, 'actions', 'actions')
+    expect(writeKeyYAMLConfig).toHaveBeenCalledWith(expect.any(apiMesh), `${templateFolder}/ext.config.yaml`, 'web', 'web-src')
   })
 })
