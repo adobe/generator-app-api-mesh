@@ -12,12 +12,10 @@ governing permissions and limitations under the License.
 /* istanbul ignore file */
 
 const path = require('path')
-
-const { constants, commonTemplates } = require('@adobe/generator-app-common-lib')
+const { constants, ActionGenerator, commonTemplates } = require('@adobe/generator-app-common-lib')
 const { commonDependencyVersions } = constants
-const GenericAction = require('@adobe/generator-add-action-generic')
 
-class ApiMeshActionGenerator extends GenericAction {
+class ApiMeshActionGenerator extends ActionGenerator {
   constructor (args, opts) {
     super(args, opts)
     this.props = {
