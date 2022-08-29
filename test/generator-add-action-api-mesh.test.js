@@ -16,8 +16,10 @@ const helpers = require('yeoman-test')
 const assert = require('yeoman-assert')
 /* eslint-disable-next-line node/no-unpublished-require */
 const cloneDeep = require('lodash.clonedeep')
+/* eslint-disable-next-line node/no-unpublished-require */
+const yaml = require('js-yaml')
 const fs = require('fs')
-const { ActionGenerator } = require('@adobe/generator-app-common-lib')
+const { ActionGenerator, constants } = require('@adobe/generator-app-common-lib')
 const ApiMeshActionGenerator = require('../src/generator-add-action-api-mesh')
 
 const basicGeneratorOptions = {
@@ -48,6 +50,60 @@ function assertGeneratedFiles (actionName) {
 
   assert.file(`${basicGeneratorOptions['action-folder']}/utils.js`)
   assert.file('test/utils.test.js')
+
+  assert.file(`${basicGeneratorOptions['action-folder']}/../conf/mesh.json`)
+}
+
+/**
+ * Checks that a correct action section has been added to the App Builder project configuration file.
+ *
+ * @param {string} actionName an action name
+ */
+function assertManifestContent (actionName) {
+  const json = yaml.load(fs.readFileSync(basicGeneratorOptions['config-path']).toString())
+  expect(json.application.runtimeManifest.packages).toBeDefined() // basicGeneratorOptions['full-key-to-manifest']
+  const packages = json.application.runtimeManifest.packages
+  // a random package name is generated, we need to figure it out
+  const packageName = Object.keys(packages)[0]
+  expect(json.application.runtimeManifest.packages[packageName].actions[actionName]).toEqual({
+    function: global.n(`${basicGeneratorOptions['action-folder']}/${actionName}/index.js`),
+    web: 'yes',
+    runtime: constants.defaultRuntimeKind,
+    inputs: {
+      MESH_ID: '$MESH_ID',
+      MESH_API_KEY: '$MESH_API_KEY',
+      LOG_LEVEL: 'debug'
+    },
+    annotations: {
+      'require-adobe-auth': true,
+      final: true
+    }
+  })
+}
+
+/**
+ * Checks that package.json has all needed dependencies specified.
+ *
+ * @param {object} dependencies An object representing expected package.json dependencies.
+ * @param {object} devDependencies An object representing expected package.json dev dependencies.
+ */
+function assertDependencies (dependencies, devDependencies) {
+  expect(JSON.parse(fs.readFileSync('package.json').toString())).toEqual(expect.objectContaining({
+    dependencies,
+    devDependencies
+  }))
+}
+
+/**
+ * Checks that mesh.json has been correctly copied.
+ *
+ * @param {string} actionName an action name
+ */
+function assertMeshJsonContent (actionName) {
+  expect(JSON.parse(fs.readFileSync(`${basicGeneratorOptions['action-folder']}/../conf/mesh.json`).toString()))
+    .toEqual(expect.objectContaining({
+      meshConfig: expect.any(Object)
+    }))
 }
 
 /**
@@ -82,7 +138,6 @@ function assertActionCodeContent (actionName) {
 describe('run', () => {
   test('test a generator invocation', async () => {
     const options = cloneDeep(basicGeneratorOptions)
-    options['skip-prompt'] = true
     await helpers.run(ApiMeshActionGenerator)
       .withOptions(options)
       .inTmpDir(dir => {
@@ -91,6 +146,9 @@ describe('run', () => {
       })
 
     assertGeneratedFiles(actionName)
+    assertManifestContent(actionName)
     assertActionCodeContent(actionName)
+    assertDependencies({ '@adobe/aio-sdk': expect.any(String), 'graphql-request': expect.any(String) }, { '@openwhisk/wskdebug': expect.any(String) })
+    assertMeshJsonContent(actionName)
   })
 })

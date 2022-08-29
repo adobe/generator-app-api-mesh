@@ -40,6 +40,7 @@
     "eslint-plugin-promise": "^6",
     "jest": "^28",
     "jest-junit": "^14",
+    "js-yaml": "^4",
     "lodash.clonedeep": "^4",
     "yeoman-assert": "^3",
     "yeoman-environment": "^3",
