@@ -19,4 +19,3 @@ process.on('unhandledRejection', error => {
 
 // quick normalization to test windows/unix paths
 global.n = p => path.normalize(p)
-global.r = p => path.resolve(p)

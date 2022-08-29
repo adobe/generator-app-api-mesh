@@ -1,6 +1,6 @@
 {
   "name": "@adobe/generator-app-api-mesh",
-  "version": "0.0.1-alpha.1",
+  "version": "0.1.0",
   "description": "Extensibility template for Adobe API Mesh, for App Builder",
   "main": "index.js",
   "scripts": {
@@ -40,6 +40,8 @@
     "eslint-plugin-promise": "^6",
     "jest": "^28",
     "jest-junit": "^14",
+    "lodash.clonedeep": "^4",
+    "yeoman-assert": "^3",
     "yeoman-environment": "^3",
     "yeoman-test": "^6"
   },
