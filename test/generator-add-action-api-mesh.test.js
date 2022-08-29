@@ -96,14 +96,27 @@ function assertDependencies (dependencies, devDependencies) {
 
 /**
  * Checks that mesh.json has been correctly copied.
- *
- * @param {string} actionName an action name
  */
-function assertMeshJsonContent (actionName) {
+function assertMeshJsonContent () {
   expect(JSON.parse(fs.readFileSync(`${basicGeneratorOptions['action-folder']}/../conf/mesh.json`).toString()))
     .toEqual(expect.objectContaining({
       meshConfig: expect.any(Object)
     }))
+}
+
+/**
+ * Checks that .env has API MESH environment variables.
+ */
+function assertEnvContent () {
+  const theFile = '.env'
+  assert.fileContent(
+    theFile,
+    '#MESH_ID='
+  )
+  assert.fileContent(
+    theFile,
+    '#MESH_API_KEY='
+  )
 }
 
 /**
@@ -149,6 +162,7 @@ describe('run', () => {
     assertManifestContent(actionName)
     assertActionCodeContent(actionName)
     assertDependencies({ '@adobe/aio-sdk': expect.any(String), 'graphql-request': expect.any(String) }, { '@openwhisk/wskdebug': expect.any(String) })
-    assertMeshJsonContent(actionName)
+    assertMeshJsonContent()
+    assertEnvContent()
   })
 })
