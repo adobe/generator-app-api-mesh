@@ -66,7 +66,7 @@ function assertManifestContent (actionName) {
   // a random package name is generated, we need to figure it out
   const packageName = Object.keys(packages)[0]
   expect(json.application.runtimeManifest.packages[packageName].actions[actionName]).toEqual({
-    function: global.n(`${basicGeneratorOptions['action-folder']}/${actionName}/index.js`),
+    function: `${basicGeneratorOptions['action-folder']}/${actionName}/index.js`,
     web: 'yes',
     runtime: constants.defaultRuntimeKind,
     inputs: {
