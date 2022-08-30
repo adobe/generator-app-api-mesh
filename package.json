@@ -1,6 +1,6 @@
 {
   "name": "@adobe/generator-app-api-mesh",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Extensibility template for Adobe API Mesh, for App Builder",
   "main": "index.js",
   "scripts": {
@@ -19,10 +19,12 @@
   "author": "Adobe Inc.",
   "license": "Apache-2.0",
   "engines": {
-    "node": "^14 || ^16"
+    "node": "^14 || ^16 || ^18"
   },
   "dependencies": {
-    "@adobe/generator-add-action-generic": "^0.2.2",
+    "@adobe/generator-add-web-assets-exc-react": "^0.2.2",
+    "@adobe/generator-app-common-lib": "^0.3.3",
+    "upath": "^2.0.1",
     "yeoman-generator": "^5"
   },
   "devDependencies": {
@@ -38,6 +40,9 @@
     "eslint-plugin-promise": "^6",
     "jest": "^28",
     "jest-junit": "^14",
+    "js-yaml": "^4",
+    "lodash.clonedeep": "^4",
+    "yeoman-assert": "^3",
     "yeoman-environment": "^3",
     "yeoman-test": "^6"
   },
@@ -49,7 +54,8 @@
       "./test/jest.setup.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/node_modules/"
+      "<rootDir>/node_modules/",
+      "<rootDir>/templates/"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [],

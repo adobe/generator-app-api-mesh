@@ -10,3 +10,12 @@ governing permissions and limitations under the License.
 */
 
 jest.setTimeout(360000)
+
+const path = require('path')
+
+process.on('unhandledRejection', error => {
+  throw error
+})
+
+// quick normalization to test windows/unix paths
+global.n = p => path.normalize(p)
