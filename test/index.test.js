@@ -36,7 +36,8 @@ describe('prototype', () => {
 
 describe('run', () => {
   test('test a generator invocation skipping questions', async () => {
-    const options = { yes: true }
+    const skipPrompt = true
+    const options = { 'skip-prompt': skipPrompt }
     await helpers.run(apiMesh)
       .withOptions(options)
     expect(prompt).not.toHaveBeenCalled()
@@ -47,6 +48,7 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
+        'skip-prompt': skipPrompt,
         'action-folder': global.n('src/api-mesh/actions'),
         'config-path': 'app.config.yaml',
         'full-key-to-manifest': 'application.runtimeManifest'
@@ -56,7 +58,8 @@ describe('run', () => {
 
   test('test a generator invocation asking questions', async () => {
     const templateFolder = 'src/dx-excshell-1/api-mesh'
-    const options = { yes: false }
+    const skipPrompt = false
+    const options = { 'skip-prompt': skipPrompt }
     await helpers.run(apiMesh)
       .withOptions(options)
       .withPrompts({ isExperienceCloudUIApp: true })
@@ -74,6 +77,7 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
+        'skip-prompt': skipPrompt,
         'action-folder': global.n(`${templateFolder}/actions`),
         'config-path': global.n(`${templateFolder}/ext.config.yaml`),
         'full-key-to-manifest': 'runtimeManifest'
@@ -85,7 +89,7 @@ describe('run', () => {
         path: 'unknown'
       }),
       {
-        'skip-prompt': false,
+        'skip-prompt': skipPrompt,
         'web-src-folder': global.n(`${templateFolder}/web-src`),
         'config-path': global.n(`${templateFolder}/ext.config.yaml`)
       }
