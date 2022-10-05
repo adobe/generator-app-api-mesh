@@ -20,7 +20,8 @@ class ApiMesh extends Generator {
   constructor (args, opts, features) {
     super(args, opts, features)
 
-    this.option('yes', { type: Boolean, default: false, description: 'Skip questions, and use all default values' })
+    // options are inputs from CLI or a yeoman parent generator
+    this.option('skip-prompt', { type: Boolean, default: false, description: 'Skip questions, and use all default values' })
 
     this.props = {
       // should a generator generate a Single Page Application accessed through Experience Cloud UI
@@ -84,7 +85,7 @@ class ApiMesh extends Generator {
   }
 
   async _askAboutExperienceCloudUI () {
-    if (!this.options.yes) {
+    if (!this.options['skip-prompt']) {
       const confirm = await this.prompt([
         {
           type: 'confirm',
@@ -111,6 +112,7 @@ class ApiMesh extends Generator {
     },
     {
       // forward needed options
+      'skip-prompt': this.options['skip-prompt'],
       'action-folder': this.actionFolder,
       'config-path': this.templateConfigPath,
       'full-key-to-manifest': constants.runtimeManifestKey
@@ -121,8 +123,8 @@ class ApiMesh extends Generator {
       Generator: excReactWebAssets,
       path: 'unknown'
     }, {
-      // forward needed args
-      'skip-prompt': this.options.yes,
+      // forward needed options
+      'skip-prompt': this.options['skip-prompt'],
       'web-src-folder': this.webSrcFolder,
       'config-path': this.templateConfigPath
     })
@@ -140,6 +142,7 @@ class ApiMesh extends Generator {
     },
     {
       // forward needed options
+      'skip-prompt': this.options['skip-prompt'],
       'action-folder': this.actionFolder,
       'config-path': this.templateConfigPath,
       'full-key-to-manifest': 'application.runtimeManifest'
