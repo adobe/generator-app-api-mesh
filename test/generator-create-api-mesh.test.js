@@ -18,7 +18,6 @@ const spawnCommandSpy = jest.spyOn(Generator.prototype, 'spawnCommand').mockImpl
 const dotEnvFile = '.env'
 const createMesh = require('./fixtures/create-mesh-output.js')
 
-
 beforeEach(() => {
   spawnCommandSpy.mockClear()
 })
