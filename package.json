@@ -24,6 +24,7 @@
   "dependencies": {
     "@adobe/generator-add-web-assets-exc-react": "^0.2.2",
     "@adobe/generator-app-common-lib": "^0.3.3",
+    "chalk": "^4",
     "upath": "^2.0.1",
     "yeoman-generator": "^5"
   },
