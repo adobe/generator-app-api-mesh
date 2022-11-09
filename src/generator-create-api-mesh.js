@@ -47,7 +47,7 @@ class ApiMeshCreateGenerator extends Generator {
       }
     } catch (error) {
       this.log(error)
-      throw new Error('Unable to create a Mesh')
+      throw new Error('Unable to create a mesh. Run "aio plugins" and check if "@adobe/aio-cli-plugin-api-mesh" plugin is installed. Make sure you\'re using the latest version.')
     }
   }
 
