@@ -14,6 +14,7 @@ const upath = require('upath')
 const Generator = require('yeoman-generator')
 const { constants, utils } = require('@adobe/generator-app-common-lib')
 const ApiMeshActionGenerator = require('./src/generator-add-action-api-mesh')
+const ApiMeshCreateGenerator = require('./src/generator-create-api-mesh')
 const excReactWebAssets = require('@adobe/generator-add-web-assets-exc-react')
 
 class ApiMesh extends Generator {
@@ -25,7 +26,9 @@ class ApiMesh extends Generator {
 
     this.props = {
       // should a generator generate a Single Page Application accessed through Experience Cloud UI
-      isExperienceCloudUIApp: false
+      isExperienceCloudUIApp: false,
+      createMesh: false,
+      meshConfig: {}
     }
   }
 
@@ -37,6 +40,7 @@ class ApiMesh extends Generator {
     } else {
       await this._generateHeadlessApp()
     }
+    await this._askAboutCreateMesh()
   }
 
   async writing () {
@@ -74,16 +78,6 @@ class ApiMesh extends Generator {
     }
   }
 
-  async end () {
-    this.log('\nSample code files have been generated.\n')
-    this.log('Next steps:')
-    this.log('1) Check that you have the "aio api-mesh" plugin installed, `aio plugins install @adobe/aio-cli-plugin-api-mesh`')
-    this.log(`2) Create API MESH from an example "mesh.json" file, \`aio api-mesh:create ${this.templateFolder}/conf/mesh.json\``)
-    this.log('3) Populate "MESH_ID", "MESH_API_KEY" environment variables in the ".env" file')
-    this.log('4) Now you can use `aio app run` or `aio app deploy` to see sample code files in action')
-    this.log('\n')
-  }
-
   async _askAboutExperienceCloudUI () {
     if (!this.options['skip-prompt']) {
       const confirm = await this.prompt([
@@ -95,6 +89,20 @@ class ApiMesh extends Generator {
         }
       ])
       this.props.isExperienceCloudUIApp = confirm.isExperienceCloudUIApp
+    }
+  }
+
+  async _askAboutCreateMesh () {
+    if (!this.options['skip-prompt']) {
+      const confirm = await this.prompt([
+        {
+          type: 'confirm',
+          name: 'createMesh',
+          message: 'Do you want to create sample API Mesh?',
+          default: this.props.createMesh
+        }
+      ])
+      this.props.createMesh = confirm.createMesh
     }
   }
 
@@ -147,6 +155,20 @@ class ApiMesh extends Generator {
       'config-path': this.templateConfigPath,
       'full-key-to-manifest': 'application.runtimeManifest'
     })
+  }
+
+  async install () {
+    if (this.props.createMesh) {
+      this.composeWith({
+        Generator: ApiMeshCreateGenerator,
+        path: 'unknown'
+      },
+      {
+        // forward needed options
+        'skip-prompt': this.options['skip-prompt'],
+        'template-folder': this.templateFolder
+      })
+    }
   }
 }
 

@@ -58,7 +58,8 @@ const { Core } = require('@adobe/aio-sdk')`,
       tplContext: this.props,
       dependencies: {
         '@adobe/aio-sdk': commonDependencyVersions['@adobe/aio-sdk'],
-        'graphql-request': '^4.3.0'
+        graphql: '^14',
+        'graphql-request': '^5.0.0'
       },
       actionManifestConfig: {
         inputs: {

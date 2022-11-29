@@ -161,7 +161,7 @@ describe('run', () => {
     assertGeneratedFiles(actionName)
     assertManifestContent(actionName)
     assertActionCodeContent(actionName)
-    assertDependencies({ '@adobe/aio-sdk': expect.any(String), 'graphql-request': expect.any(String) }, { '@openwhisk/wskdebug': expect.any(String) })
+    assertDependencies({ '@adobe/aio-sdk': expect.any(String), graphql: expect.any(String), 'graphql-request': expect.any(String) }, { '@openwhisk/wskdebug': expect.any(String) })
     assertMeshJsonContent()
     assertEnvContent()
   })

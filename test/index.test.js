@@ -63,6 +63,7 @@ describe('run', () => {
     await helpers.run(apiMesh)
       .withOptions(options)
       .withPrompts({ isExperienceCloudUIApp: true })
+      .withPrompts({ createMesh: true })
     expect(prompt).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining({
         type: 'confirm',
@@ -70,7 +71,14 @@ describe('run', () => {
         default: false
       })])
     )
-    expect(composeWith).toHaveBeenCalledTimes(2)
+    expect(prompt).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({
+        type: 'confirm',
+        name: 'createMesh',
+        default: false
+      })])
+    )
+    expect(composeWith).toHaveBeenCalledTimes(3)
     expect(composeWith).toHaveBeenCalledWith(
       expect.objectContaining({
         Generator: ApiMeshActionGenerator,
