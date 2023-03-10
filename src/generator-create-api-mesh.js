@@ -31,41 +31,42 @@ class ApiMeshCreateGenerator extends Generator {
       this.log(meshPluginName + ' is not installed. Installing...')
       try {
         await this.spawnCommand('aio', ['plugins', 'install', meshPluginName])
-      } catch(e) {
+      } catch (e) {
         throw new Error('Unable to create a mesh. Run "aio plugins" and check if "@adobe/aio-cli-plugin-api-mesh" plugin is installed. Make sure you\'re using the latest version.')
       }
     }
 
-    this.log('checking if selected workspace doesn\'t have a mesh');
+    this.log('checking if selected workspace doesn\'t have a mesh')
 
-    let isMeshFound = false;
     try {
-       await this.spawnCommand('aio', ['api-mesh', 'get','--json'], { stdio: [process.stderr] });
-       isMeshFound = true;
-    } catch(err) {
-      if(err.stderr.includes('No mesh found')) {
+      await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
+      isMeshFound = true
+    } catch (err) {
+      if (err.stderr.includes('No mesh found')) {
         // no mesh in workspace so command fails
-        this.log('Creating mesh');
-        const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
-        this.log(output);
-        this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
-        const dotenvFile = this.destinationPath(constants.dotenvFilename)
-        const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey }]
-        const content = `${vars.map(v => `${v.name}=${v.value}`).join(EOL)}${EOL}`
-        /* istanbul ignore next */
-        if (this.fs.exists(dotenvFile)) {
-          /* istanbul ignore next */
-          this.fs.append(dotenvFile, content)
-        } else {
-          this.fs.write(dotenvFile, content)
-        }
-      } else {
-        throw new Error('Error while creating mesh');
+        shouldCreateMesh = true
       }
     }
 
     if (isMeshFound) {
-      throw new Error('Selected org, project and workspace already has a mesh. Please delete the mesh to create a sample mesh using aio app');
+      throw new Error('Selected org, project and workspace already has a mesh. Delete the mesh to create a sample mesh using "aio app"')
+    } else if (shouldCreateMesh) {
+      this.log('Creating mesh')
+      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json'], { stdio: [process.stderr] })).stdout
+      this.log(output)
+      this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
+      const dotenvFile = this.destinationPath(constants.dotenvFilename)
+      const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey }]
+      const content = `${vars.map(v => `${v.name}=${v.value}`).join(EOL)}${EOL}`
+      /* istanbul ignore next */
+      if (this.fs.exists(dotenvFile)) {
+        /* istanbul ignore next */
+        this.fs.append(dotenvFile, content)
+      } else {
+        this.fs.write(dotenvFile, content)
+      }
+    } else {
+      throw new Error('Error while creating mesh')
     }
   }
 
