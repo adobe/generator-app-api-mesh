@@ -105,7 +105,17 @@ describe('run', () => {
   })
 
   test('test a generator invocation when getting the mesh fails', async () => {
-
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+      // get mesh
+      .mockRejectedValueOnce({ error: 'Error' })
+      // mesh creation returns an error message
+    const options = {
+      'template-folder': 'src/api-mesh'
+    }
+    await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
   })
 
   test('test a generator invocation when unable to create an API mesh', async () => {
