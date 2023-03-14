@@ -38,10 +38,8 @@ class ApiMeshCreateGenerator extends Generator {
 
     this.log('checking if selected workspace doesn\'t have a mesh')
     let shouldCreateMesh = false
-    let isMeshFound = false
     try {
       await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
-      isMeshFound = true
     } catch (err) {
       if (err.stderr.includes('No mesh found')) {
         // no mesh in workspace so command fails
@@ -49,9 +47,7 @@ class ApiMeshCreateGenerator extends Generator {
       }
     }
 
-    if (isMeshFound) {
-      throw new Error('Selected org, project and workspace already has a mesh. Delete the mesh to create a sample mesh using "aio app"')
-    } else if (shouldCreateMesh) {
+    if (shouldCreateMesh) {
       this.log('Creating mesh')
       const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
       this.log(output)
@@ -67,7 +63,7 @@ class ApiMeshCreateGenerator extends Generator {
         this.fs.write(dotenvFile, content)
       }
     } else {
-      throw new Error('Error while creating mesh')
+      throw new Error('Selected org, project and workspace already has a mesh. Delete the mesh to create a sample mesh using "aio app". Make sure you\'re using the latest version.')
     }
   }
 
