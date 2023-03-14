@@ -5,8 +5,7 @@ categories:
   - action
   - graphql-mesh
 
-#Removing apis section - Discussed with litviach@adobe.com . As the api-mesh plugin is generating Adobe credentials so this can be removed for now
-# apis:
-#   - code: GraphQLServiceSDK
+apis:
+  - code: GraphQLServiceSDK
 
 runtime: true
