@@ -41,6 +41,7 @@ class ApiMeshCreateGenerator extends Generator {
     try {
       await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
     } catch (err) {
+      /* istanbul ignore next */
       if (err.stderr.includes('No mesh found')) {
         // no mesh in workspace so command fails
         shouldCreateMesh = true
