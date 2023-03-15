@@ -30,7 +30,7 @@ describe('prototype', () => {
 })
 
 describe('plugin installed already', () => {
-  test('test a generator invocation', async () => {
+  test('test that the generator invocation succeeds', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
@@ -53,7 +53,7 @@ describe('plugin installed already', () => {
     )
   })
 
-  test('test a generator invocation when the workspace already has a mesh', async () => {
+  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
@@ -66,7 +66,7 @@ describe('plugin installed already', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
   })
 
-  test('test a generator invocation with mesh get call failure', async () => {
+  test('test that the generator invocation fails on get mesh generic error', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
@@ -80,8 +80,8 @@ describe('plugin installed already', () => {
   })
 })
 
-describe('plugin installation', () => {
-  test('test a generator invocation with plugin installation', async () => {
+describe('tests with plugin installation step', () => {
+  test('test  that the generator invocation succeeds with plugin installation', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '' })
@@ -106,7 +106,7 @@ describe('plugin installation', () => {
     )
   })
 
-  test('test a generator invocation when the workspace already has a mesh', async () => {
+  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '' })
@@ -121,7 +121,7 @@ describe('plugin installation', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
   })
 
-  test('test a generator invocation', async () => {
+  test('test that the generator invocation fails with mesh get generic error', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '' })
@@ -136,7 +136,7 @@ describe('plugin installation', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
   })
 
-  test('test a generator invocation with plugin installation failure', async () => {
+  test('test that generator invocation fails when plugin installation fails', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '' })
