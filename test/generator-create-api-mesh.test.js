@@ -17,6 +17,7 @@ const Generator = require('yeoman-generator')
 const spawnCommandSpy = jest.spyOn(Generator.prototype, 'spawnCommand').mockImplementation(jest.fn())
 const dotEnvFile = '.env'
 const createMesh = require('./fixtures/create-mesh-output.js')
+const getMeshOutput = require('./fixtures/get-mesh-output')
 
 beforeEach(() => {
   spawnCommandSpy.mockClear()
@@ -28,13 +29,13 @@ describe('prototype', () => {
   })
 })
 
-describe('run', () => {
-  test('test a generator invocation with plugin installation', async () => {
+describe('plugin installed already', () => {
+  test('test that the generator invocation succeeds', async () => {
     spawnCommandSpy
       // list of plugins
-      .mockReturnValueOnce({ stdout: '' })
-      // plugin installation
-      .mockReturnValueOnce({})
+      .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+      // get Mesh
+      .mockRejectedValueOnce(getMeshOutput.error)
       // mesh creation
       .mockReturnValueOnce(createMesh.output)
     const options = {
@@ -52,17 +53,49 @@ describe('run', () => {
     )
   })
 
-  test('test a generator invocation when plugin is already installed', async () => {
+  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+      // get mesh
+      .mockReturnValueOnce(getMeshOutput.output)
+    const options = {
+      'template-folder': 'src/api-mesh'
+    }
+    await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
+  })
+
+  test('test that the generator invocation fails on get mesh generic error', async () => {
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+      // get Mesh
+      .mockRejectedValueOnce(new Error('Error'))
+    const options = {
+      'template-folder': 'src/api-mesh'
+    }
+    await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('tests with plugin installation step', () => {
+  test('test  that the generator invocation succeeds with plugin installation', async () => {
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '' })
+      // plugin installation
+      .mockReturnValueOnce({})
+      // check mesh available
+      .mockRejectedValueOnce(getMeshOutput.error)
       // mesh creation
       .mockReturnValueOnce(createMesh.output)
     const options = {
       'template-folder': 'src/api-mesh'
     }
     await helpers.run(ApiMeshCreateGenerator).withOptions(options)
-    expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(4)
     assert.fileContent(
       dotEnvFile,
       'MESH_ID=aaa-bbb-ccc'
@@ -73,12 +106,42 @@ describe('run', () => {
     )
   })
 
-  test('test a generator invocation when unable to create an API mesh', async () => {
+  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
     spawnCommandSpy
       // list of plugins
-      .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
-      // mesh creation returns an error message
-      .mockReturnValueOnce(createMesh.error)
+      .mockReturnValueOnce({ stdout: '' })
+      // plugin installation
+      .mockReturnValueOnce({})
+      // get mesh
+      .mockReturnValueOnce(getMeshOutput.output)
+    const options = {
+      'template-folder': 'src/api-mesh'
+    }
+    await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
+  })
+
+  test('test that the generator invocation fails with mesh get generic error', async () => {
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '' })
+      // plugin installation
+      .mockReturnValueOnce({})
+      // get Mesh
+      .mockRejectedValueOnce(new Error('Error'))
+    const options = {
+      'template-folder': 'src/api-mesh'
+    }
+    await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
+  })
+
+  test('test that generator invocation fails when plugin installation fails', async () => {
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '' })
+      // plugin installation
+      .mockRejectedValueOnce(new Error('Installation failed'))
     const options = {
       'template-folder': 'src/api-mesh'
     }

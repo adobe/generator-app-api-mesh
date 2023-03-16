@@ -22,18 +22,36 @@ class ApiMeshCreateGenerator extends Generator {
   }
 
   async install () {
-    try {
-      this.log('Check if Mesh plugin is installed')
-      const listInstalledPlugins = (await this.spawnCommand('aio', ['plugins'], { stdio: [process.stderr] })).stdout
-      const isPluginInstalled = listInstalledPlugins.indexOf(meshPluginName) !== -1
-      if (isPluginInstalled) {
-        this.log(meshPluginName + ' is installed')
-      } else {
-        this.log(meshPluginName + ' is not installed. Installing...')
+    this.log('Check if Mesh plugin is installed')
+    const listInstalledPlugins = (await this.spawnCommand('aio', ['plugins'], { stdio: [process.stderr] })).stdout
+    const isPluginInstalled = listInstalledPlugins.indexOf(meshPluginName) !== -1
+    if (isPluginInstalled) {
+      this.log(meshPluginName + ' is installed')
+    } else {
+      this.log(meshPluginName + ' is not installed. Installing...')
+      try {
         await this.spawnCommand('aio', ['plugins', 'install', meshPluginName])
+      } catch (e) {
+        throw new Error('Unable to create a mesh. Run "aio plugins" and check if "@adobe/aio-cli-plugin-api-mesh" plugin is installed. Make sure you\'re using the latest version.')
       }
-      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
+    }
 
+    this.log('checking if selected workspace doesn\'t have a mesh')
+    let shouldCreateMesh = false
+    try {
+      await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
+    } catch (err) {
+      /* istanbul ignore next */
+      if (err.stderr.includes('No mesh found')) {
+        // no mesh in workspace so command fails
+        shouldCreateMesh = true
+      }
+    }
+
+    if (shouldCreateMesh) {
+      this.log('Creating mesh')
+      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
+      this.log(output)
       this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
       const dotenvFile = this.destinationPath(constants.dotenvFilename)
       const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey }]
@@ -45,9 +63,8 @@ class ApiMeshCreateGenerator extends Generator {
       } else {
         this.fs.write(dotenvFile, content)
       }
-    } catch (error) {
-      this.log(error)
-      throw new Error('Unable to create a mesh. Run "aio plugins" and check if "@adobe/aio-cli-plugin-api-mesh" plugin is installed. Make sure you\'re using the latest version.')
+    } else {
+      throw new Error('Selected org, project and workspace already has a mesh. Delete the mesh to create a sample mesh using "aio app". Make sure you\'re using the latest version.')
     }
   }
 
