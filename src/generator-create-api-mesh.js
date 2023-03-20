@@ -22,7 +22,7 @@ class ApiMeshCreateGenerator extends Generator {
   }
 
   async install () {
-    this.log('Check if Mesh plugin is installed')
+    this.log('Checking if mesh plugin is installed')
     const listInstalledPlugins = (await this.spawnCommand('aio', ['plugins'], { stdio: [process.stderr] })).stdout
     const isPluginInstalled = listInstalledPlugins.indexOf(meshPluginName) !== -1
     if (isPluginInstalled) {
@@ -36,7 +36,7 @@ class ApiMeshCreateGenerator extends Generator {
       }
     }
 
-    this.log('checking if selected workspace doesn\'t have a mesh')
+    this.log('Checking if selected workspace doesn\'t have a mesh')
     let shouldCreateMesh = false
     try {
       await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
