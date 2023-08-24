@@ -54,7 +54,7 @@ class ApiMeshCreateGenerator extends Generator {
       this.log(output)
       this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
       const dotenvFile = this.destinationPath(constants.dotenvFilename)
-      const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey }]
+      const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.apiKey }]
       const content = `${vars.map(v => `${v.name}=${v.value}`).join(EOL)}${EOL}`
       /* istanbul ignore next */
       if (this.fs.exists(dotenvFile)) {
@@ -71,7 +71,7 @@ class ApiMeshCreateGenerator extends Generator {
   async end () {
     /* istanbul ignore next */
     if (this.props.meshConfig) {
-      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql?api_key=${this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey}${EOL}`)))
+      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql?api_key=${this.props.meshConfig.apiKey}${EOL}`)))
     }
   }
 }
