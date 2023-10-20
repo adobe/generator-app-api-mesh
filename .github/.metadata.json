@@ -1,0 +1,25 @@
+{
+    "templateVersion": "0.2",
+    "product": {
+        "name": "API Mesh",
+        "description": "Generator app api mesh. Extensibility template for Adobe API Mesh, for App Builder."
+    },
+    "contacts": {
+        "team": {
+            "name": "Star-Griffins",
+            "DL": "Grp-Star-Griffins",
+            "slackChannel": "star-griffins"
+        }
+    },
+    "ticketTracker": {
+        "functionalJiraQueue": {
+            "projectKey": "CEXT",
+            "component": ""
+        },
+        "securityJiraQueue": {
+            "projectKey": "MAGREQ",
+            "component": "MAGREQ/Magento Extensibility"
+        }
+    },
+    "productionCodeBranches": ["main"]
+} 
