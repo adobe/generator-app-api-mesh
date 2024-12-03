@@ -19,14 +19,14 @@ class ApiMeshActionGenerator extends ActionGenerator {
     this.props = {
       description: 'This is a sample action showcasing how to query API MESH',
       // eslint-disable-next-line quotes
-      requiredParams: `['MESH_ID', 'MESH_API_KEY']`,
+      requiredParams: `['MESH_ID']`,
       // eslint-disable-next-line quotes
       requiredHeaders: `['Authorization']`,
       // eslint-disable-next-line quotes
       importCode: `const { GraphQLClient, gql } = require('graphql-request')
 const { Core } = require('@adobe/aio-sdk')`,
 
-      responseCode: `const apiMeshEndpoint = \`https://graph.adobe.io/api/\${params.MESH_ID}/graphql?api_key=\${params.MESH_API_KEY}\`
+      responseCode: `const apiMeshEndpoint = \`https://edge-stage-graph.adobe.io/api/\${params.MESH_ID}/graphql\`
     const query = gql\`
       {
         storeConfig {
@@ -64,12 +64,11 @@ const { Core } = require('@adobe/aio-sdk')`,
       actionManifestConfig: {
         inputs: {
           MESH_ID: '$MESH_ID',
-          MESH_API_KEY: '$MESH_API_KEY',
           LOG_LEVEL: 'debug'
         },
         annotations: { final: true }
       },
-      dotenvStub: { label: 'API MESH variables', vars: ['MESH_ID', 'MESH_API_KEY'] }
+      dotenvStub: { label: 'API MESH variables', vars: ['MESH_ID'] }
     })
 
     this.copyDestination(path.join(__dirname, '../templates/', 'mesh.json'), this.destinationPath(this.actionFolder, '../conf/', 'mesh.json'))

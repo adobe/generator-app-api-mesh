@@ -39,22 +39,25 @@ class ApiMeshCreateGenerator extends Generator {
     this.log('Checking if selected workspace doesn\'t have a mesh')
     let shouldCreateMesh = false
     try {
-      await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
-    } catch (err) {
-      /* istanbul ignore next */
-      if (err.stderr.includes('No mesh found')) {
+      const output = await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
+      if (output.stderr.includes('No mesh found')) {
         // no mesh in workspace so command fails
         shouldCreateMesh = true
       }
+      
+    } catch (err) {
+      /* istanbul ignore next */
+      this.log('unexpected error occurred while getting mesh' + err)
+        // no mesh in workspace so command fails
     }
 
     if (shouldCreateMesh) {
       this.log('Creating mesh')
-      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
+      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
       this.log(output)
       this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
       const dotenvFile = this.destinationPath(constants.dotenvFilename)
-      const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }, { name: 'MESH_API_KEY', value: this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey }]
+      const vars = [{ name: 'MESH_ID', value: this.props.meshConfig.mesh.meshId }]
       const content = `${vars.map(v => `${v.name}=${v.value}`).join(EOL)}${EOL}`
       /* istanbul ignore next */
       if (this.fs.exists(dotenvFile)) {
@@ -71,7 +74,7 @@ class ApiMeshCreateGenerator extends Generator {
   async end () {
     /* istanbul ignore next */
     if (this.props.meshConfig) {
-      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql?api_key=${this.props.meshConfig.adobeIdIntegrationsForWorkspace.apiKey}${EOL}`)))
+      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://edge-stage-graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql${EOL}`)))
     }
   }
 }
