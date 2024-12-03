@@ -36,19 +36,19 @@ class ApiMeshCreateGenerator extends Generator {
       }
     }
     this.log('Checking if selected workspace doesn\'t have a mesh')
-    let shouldCreateMesh = false;
+    let shouldCreateMesh = false
     try {
-      const output = await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] });
+      const output = await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
       // The command might produce output on stderr without failing
       if (output.stderr && output.stderr.includes('No mesh found')) {
-        shouldCreateMesh = true;
+        shouldCreateMesh = true
       }
     } catch (err) {
       // If the command fails, check if the error message indicates no mesh was found
-      if (err.stderr && err.stderr.message.includes('No mesh found')) {
-        shouldCreateMesh = true;
+      if (err.stderr.includes('No mesh found')) {
+        shouldCreateMesh = true
       } else {
-        this.log('unexpected error occurred while getting mesh: ' + err);
+        this.log('unexpected error occurred while getting mesh: ' + err)
       }
     }
     if (shouldCreateMesh) {
