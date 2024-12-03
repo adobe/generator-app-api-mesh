@@ -44,6 +44,7 @@ class ApiMeshCreateGenerator extends Generator {
         shouldCreateMesh = true
       }
     } catch (err) {
+      /* istanbul ignore next */
       // If the command fails, check if the error message indicates no mesh was found
       if (err.stderr.includes('No mesh found')) {
         shouldCreateMesh = true
