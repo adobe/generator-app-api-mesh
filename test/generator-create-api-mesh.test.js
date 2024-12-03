@@ -47,10 +47,6 @@ describe('plugin installed already', () => {
       dotEnvFile,
       'MESH_ID=aaa-bbb-ccc'
     )
-    assert.fileContent(
-      dotEnvFile,
-      'MESH_API_KEY=apiKey'
-    )
   })
 
   test('test that the generator invocation fails when the workspace already has a mesh', async () => {
@@ -99,10 +95,6 @@ describe('tests with plugin installation step', () => {
     assert.fileContent(
       dotEnvFile,
       'MESH_ID=aaa-bbb-ccc'
-    )
-    assert.fileContent(
-      dotEnvFile,
-      'MESH_API_KEY=apiKey'
     )
   })
 

@@ -35,22 +35,22 @@ class ApiMeshCreateGenerator extends Generator {
         throw new Error('Unable to create a mesh. Run "aio plugins" and check if "@adobe/aio-cli-plugin-api-mesh" plugin is installed. Make sure you\'re using the latest version.')
       }
     }
-
     this.log('Checking if selected workspace doesn\'t have a mesh')
-    let shouldCreateMesh = false
+    let shouldCreateMesh = false;
     try {
-      const output = await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] })
-      if (output.stderr.includes('No mesh found')) {
-        // no mesh in workspace so command fails
-        shouldCreateMesh = true
+      const output = await this.spawnCommand('aio', ['api-mesh', 'get'], { stdio: [process.stderr] });
+      // The command might produce output on stderr without failing
+      if (output.stderr && output.stderr.includes('No mesh found')) {
+        shouldCreateMesh = true;
       }
-      
     } catch (err) {
-      /* istanbul ignore next */
-      this.log('unexpected error occurred while getting mesh' + err)
-        // no mesh in workspace so command fails
+      // If the command fails, check if the error message indicates no mesh was found
+      if (err.stderr && err.stderr.message.includes('No mesh found')) {
+        shouldCreateMesh = true;
+      } else {
+        this.log('unexpected error occurred while getting mesh: ' + err);
+      }
     }
-
     if (shouldCreateMesh) {
       this.log('Creating mesh')
       const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/mesh.json', '--json'], { stdio: [process.stderr] })).stdout

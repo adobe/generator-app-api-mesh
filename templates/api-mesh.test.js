@@ -35,8 +35,7 @@ beforeEach(() => {
 })
 
 const MESH_ID = 'mesh-id'
-const MESH_API_KEY = 'mesh-api-key'
-const fakeParams = { __ow_headers: { authorization: 'Bearer fake' }, MESH_ID, MESH_API_KEY }
+const fakeParams = { __ow_headers: { authorization: 'Bearer fake' }, MESH_ID }
 
 describe('<%= actionName %>', () => {
   test('main should be defined', () => {
@@ -80,8 +79,7 @@ describe('<%= actionName %>', () => {
 
   test('missing input request parameters, should return 400', async () => {
     const response = await action.main({
-      MESH_ID,
-      MESH_API_KEY
+      MESH_ID
     })
     expect(response).toEqual({
       error: {
@@ -98,7 +96,7 @@ describe('<%= actionName %>', () => {
     expect(response).toEqual({
       error: {
         statusCode: 400,
-        body: { error: 'missing parameter(s) \'MESH_ID,MESH_API_KEY\'' }
+        body: { error: 'missing parameter(s) \'MESH_ID\'' }
       }
     })
   })
