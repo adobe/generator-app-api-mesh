@@ -49,7 +49,7 @@ class ApiMeshCreateGenerator extends Generator {
       if (err.stderr.includes('No mesh found')) {
         shouldCreateMesh = true
       } else {
-        this.log('unexpected error occurred while getting mesh: ' + err)
+        this.error('An unexpected error occurred while getting the mesh.')
       }
     }
     if (shouldCreateMesh) {
@@ -75,7 +75,7 @@ class ApiMeshCreateGenerator extends Generator {
   async end () {
     /* istanbul ignore next */
     if (this.props.meshConfig) {
-      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://edge-stage-graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql${EOL}`)))
+      this.log(chalk.blue(chalk.bold(`API Mesh endpoint:\n  -> https://edge-graph.adobe.io/api/${this.props.meshConfig.mesh.meshId}/graphql${EOL}`)))
     }
   }
 }

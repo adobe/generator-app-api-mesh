@@ -26,7 +26,7 @@ class ApiMeshActionGenerator extends ActionGenerator {
       importCode: `const { GraphQLClient, gql } = require('graphql-request')
 const { Core } = require('@adobe/aio-sdk')`,
 
-      responseCode: `const apiMeshEndpoint = \`https://edge-stage-graph.adobe.io/api/\${params.MESH_ID}/graphql\`
+      responseCode: `const apiMeshEndpoint = \`https://edge-graph.adobe.io/api/\${params.MESH_ID}/graphql\`
     const query = gql\`
       {
         storeConfig {
