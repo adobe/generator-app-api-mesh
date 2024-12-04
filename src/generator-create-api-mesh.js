@@ -49,7 +49,7 @@ class ApiMeshCreateGenerator extends Generator {
       if (err.stderr.includes('No mesh found')) {
         shouldCreateMesh = true
       } else {
-        this.error('An unexpected error occurred while getting the mesh.')
+        throw new Error('An unexpected error occurred while getting the mesh.')
       }
     }
     if (shouldCreateMesh) {

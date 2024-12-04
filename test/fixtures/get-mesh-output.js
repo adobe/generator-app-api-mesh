@@ -33,6 +33,7 @@ const output = {
 
 const error = new Error( "Error message")
 error.stderr = 'No mesh found'
+
 module.exports = {
     output: output,
     error: error

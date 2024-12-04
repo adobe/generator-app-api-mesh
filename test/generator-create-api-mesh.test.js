@@ -30,6 +30,44 @@ describe('prototype', () => {
 })
 
 describe('plugin installed already', () => {
+  
+  test('sets shouldCreateMesh to true when command produces "No mesh found" on stderr without failing', async () => {
+    spawnCommandSpy
+      // list of plugins
+      .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+      // get Mesh
+      .mockReturnValueOnce({ stderr: 'No mesh found', stdout: '' }) 
+        // mesh creation
+      .mockReturnValueOnce(createMesh.output)
+    const options = { 
+      'template-folder': 'src/api-mesh'
+    }
+    
+    await helpers.run(ApiMeshCreateGenerator).withOptions(options)
+    
+    expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
+    assert.fileContent(
+      dotEnvFile,
+      'MESH_ID=aaa-bbb-ccc'
+    )
+  
+  })
+
+  test('logs an unexpected error message when an unexpected error occurs', async () => {
+  spawnCommandSpy
+    // list of plugins
+    .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
+    // get Mesh
+    .mockRejectedValueOnce({ stderr: 'An unexpected error occurred', stdout: '' })
+
+  const options = { 
+    'template-folder': 'src/api-mesh'
+  }
+
+  await expect(async () => await helpers.run(ApiMeshCreateGenerator).withOptions(options)).rejects.toThrow()
+
+  expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
+})
   test('succeeds when plugin is installed and no mesh found', async () => {
     spawnCommandSpy
       // list of plugins
@@ -62,7 +100,7 @@ describe('plugin installed already', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
   })
 
-  test('fails on get mesh generic error', async () => {
+   test('fails on get mesh generic error', async () => {
     spawnCommandSpy
       // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
