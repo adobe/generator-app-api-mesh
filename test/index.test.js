@@ -35,7 +35,7 @@ describe('prototype', () => {
 })
 
 describe('run', () => {
-  test('test a generator invocation skipping questions', async () => {
+  test('invocation skipping questions', async () => {
     const skipPrompt = true
     const options = { 'skip-prompt': skipPrompt }
     await helpers.run(apiMesh)
@@ -56,7 +56,7 @@ describe('run', () => {
     )
   })
 
-  test('test a generator invocation asking questions', async () => {
+  test('generator invocation asking questions', async () => {
     const templateFolder = 'src/dx-excshell-1/api-mesh'
     const skipPrompt = false
     const options = { 'skip-prompt': skipPrompt }
