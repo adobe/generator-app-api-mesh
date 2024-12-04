@@ -30,13 +30,10 @@ describe('prototype', () => {
 })
 
 describe('plugin installed already', () => {
-  test('test that the generator invocation succeeds', async () => {
+  test('succeeds when plugin is installed and no mesh found', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
-      // get Mesh
       .mockRejectedValueOnce(getMeshOutput.error)
-      // mesh creation
       .mockReturnValueOnce(createMesh.output)
     const options = {
       'template-folder': 'src/api-mesh'
@@ -49,11 +46,9 @@ describe('plugin installed already', () => {
     )
   })
 
-  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
+  test('fails when workspace already has a mesh', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
-      // get mesh
       .mockReturnValueOnce(getMeshOutput.output)
     const options = {
       'template-folder': 'src/api-mesh'
@@ -62,11 +57,9 @@ describe('plugin installed already', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(2)
   })
 
-  test('test that the generator invocation fails on get mesh generic error', async () => {
+  test('fails on get mesh generic error', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '@adobe/aio-cli-plugin-api-mesh' })
-      // get Mesh
       .mockRejectedValueOnce(new Error('Error'))
     const options = {
       'template-folder': 'src/api-mesh'
@@ -77,15 +70,11 @@ describe('plugin installed already', () => {
 })
 
 describe('tests with plugin installation step', () => {
-  test('test  that the generator invocation succeeds with plugin installation', async () => {
+  test('should succeed with plugin installation', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '' })
-      // plugin installation
       .mockReturnValueOnce({})
-      // check mesh available
       .mockRejectedValueOnce(getMeshOutput.error)
-      // mesh creation
       .mockReturnValueOnce(createMesh.output)
     const options = {
       'template-folder': 'src/api-mesh'
@@ -98,13 +87,10 @@ describe('tests with plugin installation step', () => {
     )
   })
 
-  test('test that the generator invocation fails when the workspace already has a mesh', async () => {
+  test('invocation fails when workspace already has a mesh after plugin installation', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '' })
-      // plugin installation
       .mockReturnValueOnce({})
-      // get mesh
       .mockReturnValueOnce(getMeshOutput.output)
     const options = {
       'template-folder': 'src/api-mesh'
@@ -113,13 +99,10 @@ describe('tests with plugin installation step', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
   })
 
-  test('test that the generator invocation fails with mesh get generic error', async () => {
+  test('fails with mesh get generic error after plugin installation', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '' })
-      // plugin installation
       .mockReturnValueOnce({})
-      // get Mesh
       .mockRejectedValueOnce(new Error('Error'))
     const options = {
       'template-folder': 'src/api-mesh'
@@ -128,11 +111,9 @@ describe('tests with plugin installation step', () => {
     expect(spawnCommandSpy).toHaveBeenCalledTimes(3)
   })
 
-  test('test that generator invocation fails when plugin installation fails', async () => {
+  test('fails when plugin installation fails', async () => {
     spawnCommandSpy
-      // list of plugins
       .mockReturnValueOnce({ stdout: '' })
-      // plugin installation
       .mockRejectedValueOnce(new Error('Installation failed'))
     const options = {
       'template-folder': 'src/api-mesh'

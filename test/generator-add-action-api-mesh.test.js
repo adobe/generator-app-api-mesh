@@ -140,7 +140,7 @@ function assertActionCodeContent (actionName) {
 }
 
 describe('run', () => {
-  test('test a generator invocation', async () => {
+  test('generator invocation', async () => {
     const options = cloneDeep(basicGeneratorOptions)
     await helpers.run(ApiMeshActionGenerator)
       .withOptions(options)
