@@ -71,7 +71,6 @@ function assertManifestContent (actionName) {
     runtime: constants.defaultRuntimeKind,
     inputs: {
       MESH_ID: '$MESH_ID',
-      MESH_API_KEY: '$MESH_API_KEY',
       LOG_LEVEL: 'debug'
     },
     annotations: {
@@ -113,10 +112,6 @@ function assertEnvContent () {
     theFile,
     '#MESH_ID='
   )
-  assert.fileContent(
-    theFile,
-    '#MESH_API_KEY='
-  )
 }
 
 /**
@@ -129,10 +124,6 @@ function assertActionCodeContent (actionName) {
   assert.fileContent(
     theFile,
     'const { GraphQLClient, gql } = require(\'graphql-request\')'
-  )
-  assert.fileContent(
-    theFile,
-    'const requiredParams = [\'MESH_ID\', \'MESH_API_KEY\']'
   )
   assert.fileContent(
     theFile,
@@ -149,7 +140,7 @@ function assertActionCodeContent (actionName) {
 }
 
 describe('run', () => {
-  test('test a generator invocation', async () => {
+  test('generator invocation', async () => {
     const options = cloneDeep(basicGeneratorOptions)
     await helpers.run(ApiMeshActionGenerator)
       .withOptions(options)
