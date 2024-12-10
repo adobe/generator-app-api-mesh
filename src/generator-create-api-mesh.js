@@ -54,7 +54,7 @@ class ApiMeshCreateGenerator extends Generator {
     }
     if (shouldCreateMesh) {
       this.log('Creating mesh')
-      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
+      const output = (await this.spawnCommand('aio', ['api-mesh', 'create', '-c', this.options['template-folder'] + '/conf/mesh.json', '--json'], { stdio: [process.stderr] })).stdout
       this.log(output)
       this.props.meshConfig = JSON.parse(output.substring(output.indexOf('{'), output.lastIndexOf('}') + 1))
       const dotenvFile = this.destinationPath(constants.dotenvFilename)
